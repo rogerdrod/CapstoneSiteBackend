@@ -1,3 +1,4 @@
+
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm"
 import { User } from "./User";
 
@@ -11,6 +12,6 @@ export class Docs {
     file: Buffer;
 
     @ManyToOne((type) => User, (user) => user.docs)
-    user: User;
+    user: User; 
 
 }

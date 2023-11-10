@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, getRepository } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
 import { Docs } from "./Docs"
 
 @Entity({name : "users" })
@@ -14,7 +14,7 @@ export class User {
     lastName: string
 
     @Column()
-    pasword: string
+    password: string
 
     @Column()
     email: string
@@ -22,9 +22,9 @@ export class User {
     @Column() /* 0 , 1 ,2  to represent staff, applicant or user*/
     userType: number
 
-    @OneToMany(type => Docs, (doc) => doc.user)
-    docs: Docs;
-
-    @Column() /* Nullable */
+    @Column({ nullable: true }) /* Nullable */
     status: string
+    
+    @OneToMany((type) => Docs, (docs) => docs.user)
+    docs: Docs[];
 }
