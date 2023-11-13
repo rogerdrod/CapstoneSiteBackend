@@ -11,7 +11,7 @@ export class Docs {
     @Column("longblob")
     file: Buffer;
 
-    @ManyToOne((type) => User, (user) => user.docs)
+    @ManyToOne(() => User, (user) => user.docs)
     user: User; 
 
 }

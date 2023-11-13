@@ -25,6 +25,6 @@ export class User {
     @Column({ nullable: true }) /* Nullable */
     status: string
     
-    @OneToMany((type) => Docs, (docs) => docs.user)
+    @OneToMany(() => Docs, (docs) => docs.user)
     docs: Docs[];
 }

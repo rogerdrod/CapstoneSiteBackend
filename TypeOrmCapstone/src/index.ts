@@ -8,32 +8,31 @@ AppDataSource.initialize().then(async () => {
 
     console.log("Inserting a new user into the database...")
     const user = new User() 
-    user.firstName = "Ed" 
-    user.lastName = "Gonz" 
-    user.password = "pee" 
-    user.email = "ed@gmail.com" 
-    user.userType = 1 
+    user.firstName = "Roger" 
+    user.lastName = "Rodulfo" 
+    user.password = "Xxbootyeater69_420xX" 
+    user.email = "roger@gmail.com" 
+    user.userType = 3 
     user.status = null
 
     await AppDataSource.manager.save(user)
     console.log("Saved a new user with id: " + user.id)
 
-
     console.log("Inserting a new file into the database...")
-    const fileConent = fs.readFileSync('C:\Users\Roger\CapstoneSiteBackend\TypeOrmCapstone\Assignment4.docx');
+    const fileContent = fs.readFileSync('C:\\Users\\Roger\\CapstoneSiteBackend\\TypeOrmCapstone\\Assignment4.docx');
     const doc = new Docs()
-    doc.file = fileConent
-  
-/*
+    doc.file = fileContent
+
 if (user.docs) {
     user.docs.push(doc);
 } else {
     user.docs = [doc];
 }
+    doc.user = user;
 
     await AppDataSource.manager.save(doc).catch((err) => console.log(err))
     console.log("File uploaded to the database.")
-*/
+
 
     console.log("Loading users from the database...")
     const users = await AppDataSource.manager.find(User)
