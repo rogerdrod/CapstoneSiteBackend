@@ -3,6 +3,8 @@ import { DataSource } from "typeorm"
 import { User } from "./entity/User"
 import { Docs } from "./entity/Docs"
 
+
+
 export const AppDataSource = new DataSource({
     type: "mysql",
     host: "localhost",
