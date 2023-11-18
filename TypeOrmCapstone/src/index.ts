@@ -4,10 +4,12 @@ import { Docs } from "./entity/Docs"
 import { User } from "./entity/User"
 import * as fs from 'fs'
 import * as express from "express"
+
 import { Request, Response } from "express"
 
+const cors = require('cors')
 const app = express()
-app.use(express.json())
+app.use(cors())
 
 AppDataSource.initialize().then(async () => {
     /*
