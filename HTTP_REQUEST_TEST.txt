@@ -1,0 +1,15 @@
+When backend is working, go to postman and test this, should return:
+
+{
+    "id": 8,
+    "firstName": "Daniel",
+    "lastName": "Daddy",
+    "password": "password123",
+    "email": "email@email.com",
+    "userType": 2,
+    "status": "student"
+}
+
+http://localhost:3000/users/email@email.com
+
+

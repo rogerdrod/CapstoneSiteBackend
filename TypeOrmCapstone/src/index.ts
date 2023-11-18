@@ -10,7 +10,7 @@ const app = express()
 app.use(express.json())
 
 AppDataSource.initialize().then(async () => {
-
+    /*
     console.log("Inserting a new user into the database...")
     const user = new User() 
     user.firstName = "Ed" 
@@ -19,7 +19,7 @@ AppDataSource.initialize().then(async () => {
     user.email = "ed@gmail.com" 
     user.userType = 1 
     user.status = null
-
+    
     await AppDataSource.manager.save(user)
     console.log("Saved a new user with id: " + user.id)
 
@@ -28,7 +28,7 @@ AppDataSource.initialize().then(async () => {
     const fileConent = fs.readFileSync('C:\\Users\\denri\\Documents\\What is culture.docx');
     const doc = new Docs()
     doc.file = fileConent
-  
+  */
 /*
 if (user.docs) {
     user.docs.push(doc);
@@ -57,17 +57,29 @@ const app = express()
 app.use(express.json())
 
 // register routes
-app.get("/users", async function (req: Request, res: Response) {
+app.get("/user/all", async function (req: Request, res: Response) {
     const users = await AppDataSource.getRepository(User).find()
     res.json(users)
 })
 
-app.get("/users/:id", async function (req: Request, res: Response) {
-    const results = await AppDataSource.getRepository(User).findOneBy({
-         id : parseInt(req.params.id, 10),
-    })
-    return res.send(results)
-})
+app.get("/users/:email", async function (req: Request, res: Response) {
+    try {
+        const email = req.params.email;
+        // Use findOne with a proper query object
+        const user = await AppDataSource.getRepository(User).findOne({
+            where: { email: email },
+        });
+        // Check if the user exists
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+        // Send the user data in the response
+        return res.send(user);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Internal Server Error");
+    }
+});
 
 app.post("/users", async function (req: Request, res: Response) {
     const user = await AppDataSource.getRepository(User).create(req.body)
@@ -90,6 +102,7 @@ app.delete("/users/:id", async function (req: Request, res: Response) {
 })
 
 // start express server
+console.log("Listening on port 3000")
 app.listen(3000)
 
    
