@@ -1,4 +1,4 @@
-import { Bootstrap } from "./bootstrap"
+
 import { AppDataSource } from "./data-source"
 import { Docs } from "./entity/Docs"
 import { User } from "./entity/User"
