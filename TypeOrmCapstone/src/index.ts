@@ -25,7 +25,33 @@ AppDataSource.initialize()
       const users = await AppDataSource.getRepository(User).find();
       res.json(users);
     });
-
+    app.post("/users/login", async function (req: express.Request, res: express.Response) {
+        try {
+          const { email, password } = req.body;
+      
+          // Implement authentication logic here
+          // For example, check if the email and password match a user in the database
+          // You might want to use a library like bcrypt to securely compare passwords
+          // Replace the following code with your actual authentication logic
+      
+          const user = await AppDataSource.getRepository(User).findOne({
+            where: { email: email, password: password },
+          });
+      
+          if (user) {
+            // Authentication successful
+            return res.status(200).json({ message: "Login successful", user: user });
+          } else {
+            // Authentication failed
+            return res.status(401).json({ message: "Invalid credentials" });
+          }
+        } catch (error) {
+          console.error(error);
+          return res.status(500).send("Internal Server Error");
+        }
+      });
+      
+      
     app.get("/users/:email", async function (req: express.Request, res: express.Response) {
       try {
         const email = req.params.email;
