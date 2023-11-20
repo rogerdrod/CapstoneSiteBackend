@@ -7,8 +7,14 @@ import * as express from "express";
 
 const cors = require('cors');
 const app = express(); // Create an instance of the express application
+const corsOptions = {
+  origin: 'http://localhost:4200',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 AppDataSource.initialize()
