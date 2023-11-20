@@ -42,14 +42,14 @@ AppDataSource.initialize()
         console.error(error);
         return res.status(500).send("Internal Server Error");
       }
-    });
+    }); 
 
     app.post("/users", async function (req: express.Request, res: express.Response) {
       const user = await AppDataSource.getRepository(User).create(req.body);
       const results = await AppDataSource.getRepository(User).save(user);
       return res.send(results);
     });
-
+/*
     app.put("/users/:id", async function (req: express.Request, res: express.Response) {
       const user = await AppDataSource.getRepository(User).findOneBy({
         id: parseInt(req.params.id, 10),
@@ -62,12 +62,23 @@ AppDataSource.initialize()
       AppDataSource.getRepository(User).merge(user, req.body);
       const results = await AppDataSource.getRepository(User).save(user);
       return res.send(results);
-    });
+    }); */
 
+    /*
     app.delete("/users/:id", async function (req: express.Request, res: express.Response) {
       const results = await AppDataSource.getRepository(User).delete(req.params.id);
       return res.send(results);
-    });
+    }); */
+
+    app.get("/docs/all", async function (req: express.Request, res: express.Response) {
+        try {
+          const docs = await AppDataSource.getRepository(Docs).find();
+          return res.json(docs);
+        } catch (error) {
+          console.error(error);
+          return res.status(500).send("Internal Server Error");
+        }
+      });
 
     // Start express server
     const PORT = process.env.PORT || 3000;
