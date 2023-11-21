@@ -8,8 +8,11 @@ export class Docs {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column("longblob")
-    file: Buffer;
+    @Column({ length: 255 })
+    name: string;
+
+    @Column({ length: 255 })
+    file_path: string;
 
     @ManyToOne((type) => User, (user) => user.docs)
     user: User; 

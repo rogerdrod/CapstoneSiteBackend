@@ -112,6 +112,25 @@ AppDataSource.initialize()
         }
       });
 
+      app.get("/docs/:fileName", async function (req: express.Request, res: express.Response) {
+        try {
+          const fileName = req.params.fileName;
+          const doc = await AppDataSource.getRepository(Docs).findOne({
+            where: { name: fileName },
+          });
+      
+          if (doc) {
+            const filePath = doc.file_path;
+            return res.json({ filePath, fileName });
+          } else {
+            return res.status(404).send("Document not found");
+          }
+        } catch (error) {
+          console.error(error);
+          res.status(500).send("Internal Server Error");
+        }
+      });
+
     // Start express server
     const PORT = process.env.PORT || 3000;
     console.log(`Listening on port ${PORT}`);
