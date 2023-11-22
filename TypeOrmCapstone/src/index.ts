@@ -4,6 +4,7 @@ import { Docs } from "./entity/Docs";
 import { User } from "./entity/User";
 import * as fs from 'fs';
 import * as express from "express";
+import * as multer from "multer";
 
 const cors = require('cors');
 const app = express(); // Create an instance of the express application
@@ -76,7 +77,7 @@ AppDataSource.initialize()
       }
     }); 
 
-    app.post("/users", async function (req: express.Request, res: express.Response) {
+    app.post("/users",async function (req: express.Request, res: express.Response) {
       const user = await AppDataSource.getRepository(User).create(req.body);
       const results = await AppDataSource.getRepository(User).save(user);
       return res.send(results);
@@ -130,6 +131,45 @@ AppDataSource.initialize()
           res.status(500).send("Internal Server Error");
         }
       });
+
+// Remove the .single('file') part
+const storage: multer.StorageEngine = multer.diskStorage({
+  destination: (req, file, callback) => {
+    // Set the destination folder for file uploads
+    callback(null, 'C:/Users/Roger/CapstoneSiteBackend/TypeOrmCapstone/src/files/');
+  },
+  filename: (req, file, callback) => {
+    // Set the filename for the uploaded file
+    callback(null, file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
+
+app.post("/docs/upload", upload.single('file'),async (req: express.Request, res: express.Response) => {
+  try {
+    const fileName = req.file.originalname;
+    const filePath = 'C:/Users/Roger/CapstoneSiteBackend/TypeOrmCapstone/src/files/' + fileName;
+
+    // Save the file content to the specified file path
+    fs.writeFileSync(filePath, req.file.buffer);
+
+    // Insert into the MySQL database using TypeORM
+    const docRepository = AppDataSource.getRepository(Docs);
+
+    const newDoc = docRepository.create({
+      name: fileName,
+      file_path: filePath,
+    });
+
+    await docRepository.save(newDoc);
+
+    res.status(200).json({ message: 'File uploaded and data inserted into the database successfully.' });
+  } catch (error) {
+    console.error('Error handling file upload and database insertion:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
     // Start express server
     const PORT = process.env.PORT || 3000;

@@ -13,3 +13,16 @@ When backend is working, go to postman and test this, should return:
 http://localhost:3000/users/email@email.com
 
 
+Error I am getting 11/21/2023
+
+Error handling file upload and database insertion: TypeError: Cannot read properties of undefined (reading 'originalname')
+    at C:\Users\Roger\CapstoneSiteBackend\TypeOrmCapstone\src\index.ts:151:31
+    at step (C:\Users\Roger\CapstoneSiteBackend\TypeOrmCapstone\src\index.ts:33:23)
+    at Object.next (C:\Users\Roger\CapstoneSiteBackend\TypeOrmCapstone\src\index.ts:14:53)
+    at C:\Users\Roger\CapstoneSiteBackend\TypeOrmCapstone\src\index.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (C:\Users\Roger\CapstoneSiteBackend\TypeOrmCapstone\src\index.ts:4:12)
+    at C:\Users\Roger\CapstoneSiteBackend\TypeOrmCapstone\src\index.ts:149:98
+    at Layer.handle [as handle_request] (C:\Users\Roger\CapstoneSiteBackend\TypeOrmCapstone\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\Roger\CapstoneSiteBackend\TypeOrmCapstone\node_modules\express\lib\router\route.js:144:13)
+    at multerMiddleware (C:\Users\Roger\CapstoneSiteBackend\TypeOrmCapstone\node_modules\multer\lib\make-middleware.js:13:41)
