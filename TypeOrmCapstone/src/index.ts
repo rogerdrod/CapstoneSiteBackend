@@ -32,6 +32,35 @@ AppDataSource.initialize()
       const users = await AppDataSource.getRepository(User).find();
       res.json(users);
     });
+
+    app.post("/user/status/update", async (req: express.Request, res: express.Response) => {
+      try {
+        const { id, newStatus } = req.body;
+    
+        // Fetch the user from the database
+        const userRepository = AppDataSource.getRepository(User);
+        const user = await userRepository.findOne({
+          where: { id: id }
+        });
+    
+        if (!user) {
+          return res.status(404).json({ error: "User not found" });
+        }
+    
+        // Update the user's status
+        user.status = newStatus;
+    
+        // Save the updated user to the database
+        await userRepository.save(user);
+    
+        return res.status(200).json({ message: "User status updated successfully" });
+      } catch (error) {
+        console.error("Error updating user status:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
+
+
     app.post("/users/login", async function (req: express.Request, res: express.Response) {
         try {
           const { email, password } = req.body;
