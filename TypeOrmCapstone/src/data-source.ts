@@ -10,7 +10,7 @@ export const AppDataSource = new DataSource({
     host: "localhost",
     port: 3306,
     username: "root",
-    password: "2345",
+    password: "test123",
     database: "academicaidedb",
     synchronize: true,
     logging: false,
