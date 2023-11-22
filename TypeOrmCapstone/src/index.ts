@@ -161,44 +161,67 @@ AppDataSource.initialize()
         }
       });
 
+
+/*
 // Remove the .single('file') part
 const storage: multer.StorageEngine = multer.diskStorage({
   destination: (req, file, callback) => {
     // Set the destination folder for file uploads
-    callback(null, 'C:/Users/Roger/CapstoneSiteBackend/TypeOrmCapstone/src/files/');
+    callback(null, 'C:/Users/denri/CapstoneSiteBackend/TypeOrmCapstone/src/files/');
   },
   filename: (req, file, callback) => {
     // Set the filename for the uploaded file
     callback(null, file.originalname);
   }
 });
+*/
+const storage: multer.StorageEngine = multer.memoryStorage();
 
-const upload = multer({ storage: storage });
+    const upload = multer({ storage: storage });
 
-app.post("/docs/upload", upload.single('file'),async (req: express.Request, res: express.Response) => {
-  try {
-    const fileName = req.file.originalname;
-    const filePath = 'C:/Users/Roger/CapstoneSiteBackend/TypeOrmCapstone/src/files/' + fileName;
+    // Update the "/docs/upload" route
+    app.post("/docs/upload", upload.single('file'), async (req: express.Request, res: express.Response) => {
+      try {
+        console.log('Received file:', req.file);
 
-    // Save the file content to the specified file path
-    fs.writeFileSync(filePath, req.file.buffer);
+        if (!req.file) {
+          console.error('No file provided');
+          return res.status(400).json({ error: 'No file provided' });
+        }
 
-    // Insert into the MySQL database using TypeORM
-    const docRepository = AppDataSource.getRepository(Docs);
+        const fileName = req.file.originalname;
+        const filePath = 'C:/Users/denri/CapstoneSiteBackend/TypeOrmCapstone/src/files/' + fileName;
 
-    const newDoc = docRepository.create({
-      name: fileName,
-      file_path: filePath,
+        console.log('Processing file:', fileName);
+
+        // Save the file content to the specified file path
+        fs.writeFileSync(filePath, req.file.buffer);
+
+        console.log('File saved to disk.');
+
+        // Insert into the MySQL database using TypeORM
+        const docRepository = AppDataSource.getRepository(Docs);
+
+        const newDoc = docRepository.create({
+          name: fileName,
+          file_path: filePath,
+        });
+
+        console.log('Saving document to the database.');
+
+        await docRepository.save(newDoc);
+
+        console.log('Document saved successfully.');
+
+        res.status(200).json({ message: 'File uploaded and data inserted into the database successfully.' });
+      } catch (error) {
+        console.error('Error handling file upload and database insertion:', error);
+        res.status(500).json({ error: 'Internal Server Error', details: error.message });
+      }
     });
 
-    await docRepository.save(newDoc);
 
-    res.status(200).json({ message: 'File uploaded and data inserted into the database successfully.' });
-  } catch (error) {
-    console.error('Error handling file upload and database insertion:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+
 
     // Start express server
     const PORT = process.env.PORT || 3000;
