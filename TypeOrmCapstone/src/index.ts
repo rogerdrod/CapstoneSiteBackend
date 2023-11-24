@@ -190,7 +190,7 @@ const storage: multer.StorageEngine = multer.memoryStorage();
         }
 
         const fileName = req.file.originalname;
-        const filePath = 'C:/Users/denri/CapstoneSiteBackend/TypeOrmCapstone/src/files/' + fileName;
+        const filePath = 'C:/Users/Roger/CapstoneSiteBackend/TypeOrmCapstone/src/files/' + fileName;
 
         console.log('Processing file:', fileName);
 
