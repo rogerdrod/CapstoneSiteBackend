@@ -50,10 +50,17 @@ AppDataSource.initialize()
     });
 
     app.get("/user/all", async function (req: express.Request, res: express.Response) {
-      const users = await AppDataSource.getRepository(User).find();
+      const userType = req.query.userType;
+    
+      // If userType is provided in the query parameters, filter by it; otherwise, fetch all users
+      const users = userType
+        ? await AppDataSource.getRepository(User).find({ where: { userType: +userType } }) // Add the + sign to explicitly cast to number
+        : await AppDataSource.getRepository(User).find();
+    
       res.json(users);
     });
-
+    
+    
     app.post("/user/status/update", async (req: express.Request, res: express.Response) => {
       try {
         const { userId, newStatus } = req.body;
