@@ -27,6 +27,27 @@ AppDataSource.initialize()
     console.log("Here you can set up and run express / fastify / any other framework.");
 
     // Register routes
+    app.get("/user/status/:email", async (req: express.Request, res: express.Response) => {
+      try {
+        const email = req.params.email;
+        
+        // Fetch the user from the database based on the email
+        const userRepository = AppDataSource.getRepository(User);
+        const user = await userRepository.findOne({
+          where: { email: email }
+        });
+    
+        if (!user) {
+          return res.status(404).json({ error: "User not found" });
+        }
+    
+        // Respond with the user's status
+        return res.status(200).json({ status: user.status });
+      } catch (error) {
+        console.error("Error fetching user status:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
 
     app.get("/user/all", async function (req: express.Request, res: express.Response) {
       const users = await AppDataSource.getRepository(User).find();
@@ -35,14 +56,14 @@ AppDataSource.initialize()
 
     app.post("/user/status/update", async (req: express.Request, res: express.Response) => {
       try {
-        const { id, newStatus } = req.body;
-    
+        const { userId, newStatus } = req.body;
+
         // Fetch the user from the database
         const userRepository = AppDataSource.getRepository(User);
         const user = await userRepository.findOne({
-          where: { id: id }
+          where: { id: userId }
         });
-    
+
         if (!user) {
           return res.status(404).json({ error: "User not found" });
         }
@@ -208,6 +229,11 @@ const storage: multer.StorageEngine = multer.memoryStorage();
           console.error('No file provided');
           return res.status(400).json({ error: 'No file provided' });
         }
+        const userRepository = AppDataSource.getRepository(User);
+        console.log('UserId:', req.body.userId);
+
+        const userId = parseInt(req.body.userId, 10);
+        console.log('UserId:', req.body.userId);
 
         const fileName = req.file.originalname;
         const filePath = 'C:/Users/Roger/CapstoneSiteBackend/TypeOrmCapstone/src/files/' + fileName;
@@ -221,10 +247,14 @@ const storage: multer.StorageEngine = multer.memoryStorage();
 
         // Insert into the MySQL database using TypeORM
         const docRepository = AppDataSource.getRepository(Docs);
+        const user = await userRepository.findOne({
+          where: { id: userId }
+        });
 
         const newDoc = docRepository.create({
           name: fileName,
           file_path: filePath,
+          user: user,
         });
 
         console.log('Saving document to the database.');
