@@ -47,18 +47,20 @@ AppDataSource.initialize()
           return res.status(404).json({ error: "User not found" });
         }
     
-        // Update the user's status
-        user.status = newStatus;
-    
-        // Save the updated user to the database
-        await userRepository.save(user);
-    
-        return res.status(200).json({ message: "User status updated successfully" });
+        // Check if the status is already up to date
+        if (user.status !== newStatus) {
+          user.status = newStatus;
+          await userRepository.save(user);
+          return res.status(200).json({ message: "User status updated successfully" });
+        } else {
+          return res.status(200).json({ message: "User status is already up to date" });
+        }
       } catch (error) {
-        console.error("Error updating user status:", error);
+        console.error("Error saving updated user:", error);
         return res.status(500).json({ error: "Internal Server Error" });
       }
     });
+    
 
 
     app.post("/users/login", async function (req: express.Request, res: express.Response) {
@@ -104,7 +106,25 @@ AppDataSource.initialize()
         console.error(error);
         return res.status(500).send("Internal Server Error");
       }
-    }); 
+    });
+
+    app.get("/user/:id", async function (req, res) {
+      try {
+        const id = parseInt(req.params.id, 10); // Convert id to number
+        const user = await AppDataSource.getRepository(User).findOne({
+          where: { id: id },
+        });
+    
+        if (!user) {
+          return res.status(404).send("User not found");
+        }
+    
+        return res.send(user);
+      } catch (error) {
+        console.error(error);
+        return res.status(500).send("Internal Server Error");
+      }
+    });
 
     app.post("/users",async function (req: express.Request, res: express.Response) {
       const user = await AppDataSource.getRepository(User).create(req.body);
